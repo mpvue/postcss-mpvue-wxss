@@ -25,6 +25,11 @@ it('test cleanSelector', () => {
     }
     *,:after,:before{
       box-sizing:inherit;
+    }
+    @media print {
+      body {
+        display: block;
+      }
     }`;
   const output = ``;
   const options = {};
@@ -41,10 +46,19 @@ it('test cleanSelector with options', () => {
     }
     bbb {
       margin: 100px
+    }
+    @media screen and (max-width: 300px) {
+      body {
+        display: block;
+      }
     }`;
   const output = ``;
   const options = {
-    cleanSelector: ['aaa', 'bbb', '*']
+    cleanSelector: ['aaa', 'bbb', '*'],
+    cleanAtRule: [{
+      name: 'media',
+      params: [/screen/]
+    }]
   };
   return run(input, output, options);
 });
