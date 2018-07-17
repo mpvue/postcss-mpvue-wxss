@@ -4,9 +4,14 @@
 const postcss = require('postcss');
 const selectorParser = require('postcss-selector-parser');
 const replaceTagSelector = require('./lib/wxmlTagMap');
+const { isRegExp } = require('./lib/utils');
 
 const defConfig = {
   cleanSelector: ['*'],
+  cleanAtRule: [{
+    name: 'media',
+    params: ['print']
+  }],
   remToRpx: 100,
   replaceTagSelector
 };
@@ -20,6 +25,23 @@ module.exports = postcss.plugin('postcss-mpvue-wxss', function (options) {
 
   return function (root) {
     // Transform CSS AST here： root, result
+    root.walkAtRules(rule => {
+      // 清理不支持的@开头规则
+      for (cleanRule of options.cleanAtRule) {
+        if (cleanRule.name !== rule.name) {
+          continue;
+        }
+        if (!cleanRule.params) {
+          return rule.remove();
+        }
+        for (param of cleanRule.params) {
+          if (isRegExp(param) && param.test(rule.params) || param === rule.params) {
+            return rule.remove();
+          }
+        }
+      }
+    });
+    
     root.walkRules(rule => {
       const { selector } = rule || {};
 
@@ -43,7 +65,7 @@ module.exports = postcss.plugin('postcss-mpvue-wxss', function (options) {
             // 清理不支持的选择器
             if (options.cleanSelector.includes(n.value)) {
               // return n.value = 'view';
-              return rule.remove()
+              return rule.remove();
             }
           })
         })
