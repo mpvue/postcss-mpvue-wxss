@@ -139,6 +139,9 @@ it('test replaceTagSelector with options', () => {
     }
     bbb {
       width: 60rpx;
+    }
+    * {
+      box-sizing: border-box;
     }`;
   const output = `
     ._aaa {
@@ -146,11 +149,15 @@ it('test replaceTagSelector with options', () => {
     }
     ccc, .ddd {
       width: 60rpx;
+    }
+    view, text {
+      box-sizing: border-box;
     }`;
   const options = {
     replaceTagSelector: {
       aaa: 'replaceToClass',
-      bbb: 'ccc, .ddd'
+      bbb: 'ccc, .ddd',
+      '*': 'view, text'
     }
   };
   return run(input, output, options);
