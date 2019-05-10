@@ -41,7 +41,7 @@ module.exports = postcss.plugin('postcss-mpvue-wxss', function (options) {
         }
       }
     });
-    
+
     root.walkRules(rule => {
       const { selector } = rule || {};
 
@@ -54,7 +54,7 @@ module.exports = postcss.plugin('postcss-mpvue-wxss', function (options) {
         selectors.each(function (selector) {
           selector.each(function (n) {
             // 转换 tag 选择器
-            if (n.type === 'tag') {
+            if (n.type === 'tag'||n.type === 'universal') {
               const k = n.value;
               const v = options.replaceTagSelector[k];
               if (v) {
